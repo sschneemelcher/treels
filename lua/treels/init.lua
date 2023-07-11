@@ -10,12 +10,29 @@ source.get_trigger_characters = function()
 end
 
 source.complete = function(self, params, callback)
-    self.items = { 
-        { word = 'TEST'; label = 'TEST 🌳'; insertText = 'TEST'; filterText = 'TEST' };
-    }
+    local ok, parser = pcall(require('vim.treesitter').get_parser)
+
+    if not ok then
+        return
+    end
+
+    local tree = parser:parse()[1]
+    local query_string = '(variable_declaration) @variable_declaration'
+    local query = vim.treesitter.query.parse(parser:lang(), query_string)
+    self.items = {}
+
+    for _, node in query:iter_captures(tree:root(), 0, 0, -1) do
+        local word = vim.treesitter.get_node_text(node, 0)
+
+        table.insert(self.items, {
+            word = word,
+            label = word,
+            insertText = word,
+            filterText = word,
+        })
+    end
 
     callback(self.items)
 end
 
 return source
-
