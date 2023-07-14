@@ -1,3 +1,4 @@
+local queries = require('treels.langs')
 local source = {}
 
 source.new = function()
@@ -11,13 +12,19 @@ end
 
 source.complete = function(self, params, callback)
     local ok, parser = pcall(require('vim.treesitter').get_parser)
-
+    
     if not ok then
         return
     end
 
+    local query_string = queries[parser:lang()]
+
+    if not query_string then
+        return
+    end
+
     local tree = parser:parse()[1]
-    local query_string = '(variable_declaration) @variable_declaration'
+
     local query = vim.treesitter.query.parse(parser:lang(), query_string)
     self.items = {}
 
