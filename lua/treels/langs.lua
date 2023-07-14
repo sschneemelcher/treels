@@ -3,6 +3,11 @@ local query_for_lang = {
         (assignment_statement 
             (variable_list 
                 name: (identifier) @name))
+    ]],
+
+    python = [[
+        (function_definition
+            name: (identifier) @name)
     ]]
 }
 

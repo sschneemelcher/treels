@@ -7,12 +7,12 @@ source.new = function()
 end
 
 source.get_trigger_characters = function()
-  return { [[:alnum:]] }
+  return { [[a-z]] }
 end
 
 source.complete = function(self, params, callback)
     local ok, parser = pcall(require('vim.treesitter').get_parser)
-    
+
     if not ok then
         return
     end
@@ -29,13 +29,13 @@ source.complete = function(self, params, callback)
     self.items = {}
 
     for _, node in query:iter_captures(tree:root(), 0, 0, -1) do
-        local word = vim.treesitter.get_node_text(node, 0)
-
+        local name = vim.treesitter.get_node_text(node, 0)
+        local kind = node.type(node.parent(node)):match('^(.*)_')
         table.insert(self.items, {
-            word = word,
-            label = word,
-            insertText = word,
-            filterText = word,
+            label = name,
+            cmp = { kind_text = kind },
+            insertText = name,
+            filterText = name,
         })
     end
 
