@@ -6,8 +6,10 @@ local query_for_lang = {
     ]],
 
     python = [[
-        (function_definition
-            name: (identifier) @name)
+        [
+            left: (identifier)
+            name: (identifier)
+        ] @name
     ]]
 }
 
